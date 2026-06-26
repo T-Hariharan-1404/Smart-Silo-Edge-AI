@@ -1,141 +1,209 @@
-# Smart-Silo-Edge-AI
 
+#  Smart Silo Monitoring and Decision Support System
 
-An IoT and Edge AI-based grain storage system designed to reduce post-harvest losses and improve buffer stock management. The system continuously monitors grain storage conditions and uses TinyML-powered Random Forest models to predict rainfall and market demand, enabling smarter decisions and automated protection.
+An IoT-based Smart Silo Monitoring and Decision Support System developed using ESP32 to monitor grain storage conditions in real time and provide intelligent recommendations for stock management. The system continuously tracks environmental parameters inside the silo, predicts spoilage risks, estimates market demand, and assists farmers in making informed decisions regarding grain storage and selling.
 
 ---
 
-##  About the Project
 
-Traditional grain storage systems are mostly reactive, meaning problems are addressed only after they occur. Factors such as humidity, temperature, gas formation, and changing market demand can lead to spoilage and financial losses.
+##  Introduction
 
-Smart Silo Edge AI aims to solve these challenges by combining IoT sensors with machine learning to create an intelligent and affordable storage solution.
+Post-harvest losses due to improper storage conditions significantly affect agricultural productivity. Traditional grain storage methods lack continuous monitoring and decision-making capabilities.
 
-The system monitors storage conditions in real time, predicts rainfall and demand trends, and automatically controls a protective gate to help maintain grain quality and optimize inventory planning.
+This project addresses these challenges by integrating multiple sensors with an ESP32 microcontroller to create a smart grain storage ecosystem. The system monitors silo conditions, detects potential spoilage, provides security monitoring, and generates actionable recommendations for farmers.
 
 ---
 
 ##  Features
 
-- Real-time monitoring of temperature and humidity
-- Grain level measurement using ultrasonic sensing
-- Gas detection for spoilage prevention
-- Rain prediction using a Random Forest model
-- Demand forecasting for intelligent buffer stock management
-- Automatic gate control using a servo motor
-- Dashboard for visualization and alerts
-- Low-cost and scalable design suitable for rural deployment
+- Real-time grain level monitoring
+
+- Temperature and humidity monitoring
+
+- Harmful gas detection for spoilage prediction
+
+- Light intensity measurement
+
+- Motion detection for security
+
+- Demand score estimation
+
+- Rain probability prediction
+
+- Intelligent stock selling recommendations
+
+- Automatic gate status monitoring
+
+- Continuous environmental surveillance
 
 ---
 
-##  Hardware Used
-
-- ESP32 Microcontroller
-- DHT11 Sensor
-- Ultrasonic Sensor
-- MQ135 Gas Sensor
-- IR Sensor
-- Servo Motor
-
----
-
-##  Software and Tools
-
-- Python
-- Flask
-- Streamlit
-- Pandas
-- Scikit-Learn
-- TinyML
-- Random Forest Machine Learning Models
-
----
-
-##  Machine Learning Models
-
-### Rain Prediction
-
-A Random Forest classification model is used to predict whether rainfall is likely to occur based on environmental conditions.
-
-**Inputs**
-- Temperature
-- Humidity
-- Historical weather data
-
-**Output**
-- Rain / No Rain
-
-### Demand Forecasting
-
-A Random Forest regression model is used to estimate future grain demand.
-
-**Inputs**
-- Historical demand data
-- Pricing data
-- Rain prediction
-
-**Output**
-- Predicted demand levels
-
----
-
-##  System Workflow
+##  System Architecture
 
 ```text
-Sensors
-   ↓
-ESP32 Data Collection
-   ↓
-Machine Learning Prediction
-   ↓
-Risk Analysis
-   ↓
-Dashboard and Alerts
-   ↓
-Automated Gate Control
+                    +----------------+
+                    |     ESP32      |
+                    +--------+-------+
+                             |
+        ------------------------------------------------
+        |          |           |          |            |
+        |          |           |          |            |
+   Ultrasonic    DHT11      MQ Gas      LDR      IR Sensor
+      Sensor      Sensor     Sensor     Sensor
+        |          |           |          |            |
+        ------------------------------------------------
+                             |
+                             |
+                   Decision Support Engine
+                             |
+          -------------------------------------
+          |                  |                |
+          |                  |                |
+     Spoilage Status   Demand Analysis   Gate Control
+                             |
+                             |
+                     Smart Silo Report
 ```
 
 ---
 
-##  Applications
+##  Hardware Components
 
-- Government food warehouses
-- FCI storage centers
-- Agricultural cooperatives
-- Rural grain storage facilities
-- Supply chain and logistics hubs
+| Component | Quantity |
+|-----------|----------|
+| ESP32 Development Board | 1 |
+| HC-SR04 Ultrasonic Sensor | 1 |
+| DHT11/DHT22 Sensor | 1 |
+| MQ Gas Sensor | 1 |
+| LDR Sensor | 1 |
+| IR Motion Sensor | 1 |
+| Servo Motor | 1 |
+| Breadboard | 1 |
+| Jumper Wires | As required |
+| Power Supply | 1 |
 
 ---
 
-##  Contribution to Sustainable Development Goals
+##  Software Requirements
 
-- **SDG 2 – Zero Hunger**
-  - Reduces grain losses and improves food security.
+- Arduino IDE
+- ESP32 Board Package
+- C/C++ Programming Language
 
-- **SDG 9 – Industry, Innovation and Infrastructure**
-  - Promotes smart agricultural infrastructure.
+### Required Libraries
 
-- **SDG 12 – Responsible Consumption and Production**
-  - Minimizes wastage through data-driven decisions.
+```cpp
+#include <WiFi.h>
+#include <DHT.h>
+#include <ESP32Servo.h>
+```
 
-- **SDG 13 – Climate Action**
-  - Supports weather-aware storage planning.
+
+##  Pin Configuration
+
+| Device | ESP32 Pin |
+|---------|------------|
+| Ultrasonic Trigger | GPIO 5 |
+| Ultrasonic Echo | GPIO 18 |
+| DHT Sensor | GPIO 4 |
+| MQ Gas Sensor | GPIO 34 |
+| LDR Sensor | GPIO 35 |
+| IR Sensor | GPIO 26 |
+| Servo Motor | GPIO 25 |
+
+
+---
+
+## Working Principle
+
+### 1. Grain Level Monitoring
+
+The ultrasonic sensor measures the distance between the sensor and grain surface. The system calculates the grain level inside the silo.
+
+### 2. Temperature and Humidity Monitoring
+
+The DHT sensor continuously monitors environmental conditions to ensure safe grain storage.
+
+### 3. Gas Concentration Monitoring
+
+The MQ gas sensor detects harmful gases produced due to grain deterioration or spoilage.
+
+### 4. Light Intensity Monitoring
+
+The LDR sensor measures ambient light levels within the storage environment.
+
+### 5. Motion Detection
+
+The IR sensor detects unauthorized movement near the storage area, enhancing security.
+
+### 6. Intelligent Decision Support
+
+Based on collected sensor data, the system:
+
+- Calculates market demand score.
+- Predicts rain probability.
+- Determines spoilage status.
+- Generates stock-selling recommendations.
+
+---
+
+##  Decision Support Logic
+
+### Spoilage Detection
+
+```text
+IF Gas Concentration > Threshold
+       ↓
+Spoilage Risk = HIGH
+ELSE
+Spoilage Risk = LOW
+```
+
+### Market Recommendation
+
+```text
+IF Demand Score > 70
+      → SELL STOCK
+
+IF Demand Score between 40 and 70
+      → HOLD STOCK
+
+IF Demand Score < 40
+      → DO NOT SELL STOCK
+```
+
+### Security Logic
+
+```text
+IF Motion Detected
+      → Gate Opens / Alert Triggered
+ELSE
+      → Gate Remains Closed
+```
+
+---
+
+
+##  Applications
+
+- Smart Grain Storage
+- Precision Agriculture
+- Warehouse Automation
+- Agricultural Supply Chain Monitoring
+- Post-Harvest Loss Reduction
+- Farm Inventory Management
 
 ---
 
 ##  Future Enhancements
 
-- AI-based spoilage prediction
-- SMS alerts for farmers
-- Multi-silo network optimization
-- Cloud integration and advanced analytics
-- Integration with government procurement systems
+- IoT Cloud Dashboard Integration
+- Mobile Application Development
+- SMS and Email Alerts
+- Machine Learning-Based Demand Forecasting
+- Web Dashboard for Remote Monitoring
+- Automatic Ventilation Control
+- GPS-Based Warehouse Tracking
 
 ---
 
-
-##  Hackathon
-
-**ElectroHack 2.0**
-
----
