@@ -139,6 +139,3 @@ Automated Gate Control
 **ElectroHack 2.0**
 
 ---
-
-
-If you found this project interesting, consider giving the repository a star!
